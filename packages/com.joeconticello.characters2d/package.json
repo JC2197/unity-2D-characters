@@ -1,0 +1,14 @@
+{
+  "name": "com.joeconticello.characters2d",
+  "version": "0.1.0",
+  "displayName": "Characters 2D Core",
+  "description": "Reusable 2D character motor and aiming systems with no networking dependency.",
+  "unity": "6000.0",
+  "dependencies": {
+    "com.unity.inputsystem": "1.18.0"
+  },
+  "keywords": ["2d", "character", "motor", "aim"],
+  "author": {
+    "name": "Joe Conticello"
+  }
+}

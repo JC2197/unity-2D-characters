@@ -1,0 +1,16 @@
+{
+  "name": "JoeConticello.Characters2D.Runtime",
+  "rootNamespace": "JoeConticello.Characters2D",
+  "references": [
+    "Unity.InputSystem"
+  ],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}

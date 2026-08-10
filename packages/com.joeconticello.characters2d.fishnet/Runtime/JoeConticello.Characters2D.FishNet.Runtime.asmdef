@@ -1,0 +1,22 @@
+{
+  "name": "JoeConticello.Characters2D.FishNet.Runtime",
+  "rootNamespace": "JoeConticello.Characters2D.FishNet",
+  "references": [
+    "JoeConticello.Characters2D.Runtime"
+  ],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [
+    {
+      "name": "FishNet.Runtime",
+      "expression": "",
+      "define": "HAS_FISHNET_RUNTIME"
+    }
+  ],
+  "noEngineReferences": false
+}
