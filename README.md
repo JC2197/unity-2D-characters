@@ -31,3 +31,9 @@ For a non-networked player, add these components to the player GameObject:
 - `PlayerInput`
 
 Assign a `Vector2` Move action to the input source. `CharacterMotorDriver` captures the enabled Input System actions every frame and simulates the motor. For a FishNet player, use `FishNetCharacterMotorDriver` instead; it simulates only on the local network owner.
+
+## Movement Animation
+
+`TopDownCharacterMotor` can update an `Animator` bool parameter named `IsMoving` whenever its velocity is non-zero. It finds an Animator on the player or its children automatically, or you can assign one directly.
+
+Create a base Animator Controller with `Idle` and `Move` states, then make transitions between them conditional on `IsMoving` being false and true respectively. Assign an `AnimatorOverrideController` based on that controller to each character Animator and override its `Idle` and `Move` clips. The motor continues to drive the same parameter for every character.

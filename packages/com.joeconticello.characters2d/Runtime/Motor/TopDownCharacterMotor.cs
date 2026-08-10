@@ -9,6 +9,10 @@ namespace JoeConticello.Characters2D
         [SerializeField] private Rigidbody2D body;
         [SerializeField] private CharacterFacingMode facingMode = CharacterFacingMode.Aim;
 
+        [Header("Animation")]
+        [SerializeField] private Animator animator;
+        [SerializeField] private string movingParameter = "IsMoving";
+
         private CharacterMotorState state;
         public CharacterMotorState State => state;
 
@@ -16,6 +20,9 @@ namespace JoeConticello.Characters2D
         {
             if (body == null)
                 body = GetComponent<Rigidbody2D>();
+
+            if (animator == null)
+                animator = GetComponentInChildren<Animator>();
         }
 
         public void Simulate(in CharacterInputFrame input, float deltaTime)
@@ -36,6 +43,7 @@ namespace JoeConticello.Characters2D
             }
 
             ApplyFacing(facingLeft);
+            ApplyAnimation(velocity);
             state = new CharacterMotorState(position, velocity, angle, facingLeft);
         }
 
@@ -71,6 +79,12 @@ namespace JoeConticello.Characters2D
             Vector3 scale = transform.localScale;
             scale.x = Mathf.Abs(scale.x) * (facingLeft ? -1f : 1f);
             transform.localScale = scale;
+        }
+
+        private void ApplyAnimation(Vector2 velocity)
+        {
+            if (animator != null && !string.IsNullOrWhiteSpace(movingParameter))
+                animator.SetBool(movingParameter, velocity.sqrMagnitude > 0f);
         }
     }
 }
