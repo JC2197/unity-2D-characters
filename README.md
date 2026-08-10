@@ -19,3 +19,15 @@ The core package uses Unity Input System and sends generic action IDs in each in
 - `HeldActionIds`: actions currently held
 
 Configure any number of actions in `UnityInputSystemCharacterInputSource` by adding named action bindings (for example: `Jump`, `Interact`, `Ability1`, `Ability2`, `Reload`).
+
+## Local Movement Setup
+
+For a non-networked player, add these components to the player GameObject:
+
+- `Rigidbody2D`
+- `TopDownCharacterMotor`
+- `UnityInputSystemCharacterInputSource`
+- `CharacterMotorDriver`
+- `PlayerInput`
+
+Assign a `Vector2` Move action to the input source. `CharacterMotorDriver` captures the enabled Input System actions every frame and simulates the motor. For a FishNet player, use `FishNetCharacterMotorDriver` instead; it simulates only on the local network owner.
