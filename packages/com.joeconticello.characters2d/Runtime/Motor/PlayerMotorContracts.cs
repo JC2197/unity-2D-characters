@@ -2,6 +2,12 @@ using UnityEngine;
 
 namespace JoeConticello.Characters2D
 {
+    public enum CharacterFacingMode
+    {
+        Aim,
+        Movement
+    }
+
     public interface ICharacterInputSource
     {
         CharacterInputFrame CaptureInput();
