@@ -1,6 +1,6 @@
 {
   "name": "com.joeconticello.characters2d",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "displayName": "Characters 2D Core",
   "description": "Reusable 2D character motor and aiming systems with no networking dependency.",
   "unity": "6000.0",
