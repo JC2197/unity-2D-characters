@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 using JoeConticello.Characters2D;
 
 #if FISHNET
@@ -13,6 +14,7 @@ namespace JoeConticello.Characters2D.FishNet
     {
         [SerializeField] private TopDownCharacterMotor motor;
         [SerializeField] private MonoBehaviour inputSourceComponent;
+        [SerializeField] private PlayerInput playerInput;
 
         private ICharacterInputSource inputSource;
 
@@ -20,21 +22,35 @@ namespace JoeConticello.Characters2D.FishNet
         {
             if (motor == null)
                 motor = GetComponent<TopDownCharacterMotor>();
+
+            if (inputSourceComponent == null)
+                inputSourceComponent = GetComponent<UnityInputSystemCharacterInputSource>();
+
+            if (playerInput == null)
+                playerInput = GetComponent<PlayerInput>();
+
             inputSource = inputSourceComponent as ICharacterInputSource;
+            SetPlayerInputEnabled(false);
+        }
+
+        public override void OnStartClient()
+        {
+            SetPlayerInputEnabled(IsOwner);
+        }
+
+        public override void OnStopClient()
+        {
+            SetPlayerInputEnabled(false);
         }
 
         private void Update()
         {
-            if (motor == null)
+            if (motor == null || inputSource == null || !IsOwner)
                 return;
 
-            // Local prediction path. Reconciliation hooks should be added here.
-            if (IsOwner && inputSource != null)
-            {
-                CharacterInputFrame input = inputSource.CaptureInput();
-                motor.Simulate(in input, Time.deltaTime);
-                ServerRpcSubmitInput(input.Move, input.AimWorld, input.PressedActionIds, input.HeldActionIds, input.Tick);
-            }
+            CharacterInputFrame input = inputSource.CaptureInput();
+            motor.Simulate(in input, Time.deltaTime);
+            ServerRpcSubmitInput(input.Move, input.AimWorld, input.PressedActionIds, input.HeldActionIds, input.Tick);
         }
 
         [ServerRpc]
@@ -45,6 +61,12 @@ namespace JoeConticello.Characters2D.FishNet
 
             CharacterInputFrame input = new CharacterInputFrame(move, aimWorld, pressedActionIds, heldActionIds, tick);
             motor.Simulate(in input, Time.deltaTime);
+        }
+
+        private void SetPlayerInputEnabled(bool enabled)
+        {
+            if (playerInput != null)
+                playerInput.enabled = enabled;
         }
     }
 #else
