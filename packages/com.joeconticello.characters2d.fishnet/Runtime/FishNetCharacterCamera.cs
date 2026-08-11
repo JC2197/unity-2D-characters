@@ -2,6 +2,7 @@ using UnityEngine;
 
 #if FISHNET
 using FishNet.Object;
+using FishNet.Connection;
 #endif
 
 namespace JoeConticello.Characters2D.FishNet
