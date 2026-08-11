@@ -8,12 +8,15 @@ namespace JoeConticello.Characters2D
         [SerializeField] private float moveSpeed = 5f;
         [SerializeField] private Rigidbody2D body;
         [SerializeField] private CharacterFacingMode facingMode = CharacterFacingMode.Aim;
+        [SerializeField] private Transform visualTransform;
+        [SerializeField, Min(0f)] private float facingDirectionThreshold = 0.01f;
 
         [Header("Animation")]
         [SerializeField] private Animator animator;
         [SerializeField] private string movingParameter = "IsMoving";
 
         private CharacterMotorState state;
+        private bool hasFacing;
         public CharacterMotorState State => state;
 
         private void Awake()
@@ -31,7 +34,12 @@ namespace JoeConticello.Characters2D
             Vector2 position = body != null ? body.position + velocity * deltaTime : (Vector2)transform.position + velocity * deltaTime;
 
             float angle = Mathf.Atan2(input.AimWorld.y - position.y, input.AimWorld.x - position.x) * Mathf.Rad2Deg;
-            bool facingLeft = GetFacingLeft(input, position);
+            bool facingLeft = state.FacingLeft;
+            if (TryGetFacingLeft(input, position, out bool requestedFacingLeft))
+            {
+                facingLeft = requestedFacingLeft;
+                ApplyFacing(facingLeft);
+            }
 
             if (body != null)
             {
@@ -42,7 +50,6 @@ namespace JoeConticello.Characters2D
                 transform.position = position;
             }
 
-            ApplyFacing(facingLeft);
             ApplyAnimation(velocity);
             state = new CharacterMotorState(position, velocity, angle, facingLeft);
         }
@@ -62,23 +69,32 @@ namespace JoeConticello.Characters2D
             state = new CharacterMotorState(worldPosition, Vector2.zero, state.AimAngleDeg, state.FacingLeft);
         }
 
-        private bool GetFacingLeft(in CharacterInputFrame input, Vector2 position)
+        private bool TryGetFacingLeft(in CharacterInputFrame input, Vector2 position, out bool facingLeft)
         {
             float directionX = facingMode == CharacterFacingMode.Aim
                 ? input.AimWorld.x - position.x
                 : input.Move.x;
 
-            if (Mathf.Approximately(directionX, 0f))
-                return state.FacingLeft;
+            if (Mathf.Abs(directionX) < facingDirectionThreshold)
+            {
+                facingLeft = state.FacingLeft;
+                return false;
+            }
 
-            return directionX < 0f;
+            facingLeft = directionX < 0f;
+            return true;
         }
 
         private void ApplyFacing(bool facingLeft)
         {
-            Vector3 scale = transform.localScale;
+            if (hasFacing && facingLeft == state.FacingLeft)
+                return;
+
+            Transform visual = visualTransform != null ? visualTransform : transform;
+            Vector3 scale = visual.localScale;
             scale.x = Mathf.Abs(scale.x) * (facingLeft ? -1f : 1f);
-            transform.localScale = scale;
+            visual.localScale = scale;
+            hasFacing = true;
         }
 
         private void ApplyAnimation(Vector2 velocity)
