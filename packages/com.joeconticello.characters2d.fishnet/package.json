@@ -9,6 +9,7 @@
     "name": "Joe Conticello"
   },
   "dependencies": {
-    "com.joeconticello.characters2d": "0.1.4"
+    "com.joeconticello.characters2d": "0.1.4",
+    "com.unity.inputsystem": "1.18.0"
   }
 }

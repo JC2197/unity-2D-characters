@@ -3,7 +3,8 @@
   "rootNamespace": "JoeConticello.Characters2D.FishNet",
   "references": [
     "JoeConticello.Characters2D.Runtime",
-    "FishNet.Runtime"
+    "FishNet.Runtime",
+    "Unity.InputSystem"
   ],
   "includePlatforms": [],
   "excludePlatforms": [],
