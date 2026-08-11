@@ -1,13 +1,11 @@
 using UnityEngine;
 using JoeConticello.Characters2D;
-
-#if HAS_FISHNET_RUNTIME
 using FishNet.Object;
-#endif
+
 
 namespace JoeConticello.Characters2D.FishNet
 {
-#if HAS_FISHNET_RUNTIME
+
     [DisallowMultipleComponent]
     public sealed class FishNetCharacterMotorDriver : NetworkBehaviour
     {
@@ -20,21 +18,21 @@ namespace JoeConticello.Characters2D.FishNet
         {
             if (motor == null)
                 motor = GetComponent<TopDownCharacterMotor>();
+
+            if (inputSourceComponent == null)
+                inputSourceComponent = GetComponent<UnityInputSystemCharacterInputSource>();
+
             inputSource = inputSourceComponent as ICharacterInputSource;
         }
 
         private void Update()
         {
-            if (motor == null)
+            if (motor == null || inputSource == null || !IsOwner)
                 return;
 
-            // Local prediction path. Reconciliation hooks should be added here.
-            if (IsOwner && inputSource != null)
-            {
-                CharacterInputFrame input = inputSource.CaptureInput();
-                motor.Simulate(in input, Time.deltaTime);
-                ServerRpcSubmitInput(input.Move, input.AimWorld, input.PressedActionIds, input.HeldActionIds, input.Tick);
-            }
+            CharacterInputFrame input = inputSource.CaptureInput();
+            motor.Simulate(in input, Time.deltaTime);
+            ServerRpcSubmitInput(input.Move, input.AimWorld, input.PressedActionIds, input.HeldActionIds, input.Tick);
         }
 
         [ServerRpc]
@@ -47,9 +45,5 @@ namespace JoeConticello.Characters2D.FishNet
             motor.Simulate(in input, Time.deltaTime);
         }
     }
-#else
-    public sealed class FishNetCharacterMotorDriver : MonoBehaviour
-    {
-    }
-#endif
 }
+
