@@ -30,7 +30,6 @@ namespace JoeConticello.Characters2D.FishNet
                 playerInput = GetComponent<PlayerInput>();
 
             inputSource = inputSourceComponent as ICharacterInputSource;
-            SetPlayerInputEnabled(false);
         }
 
         public override void OnStartClient()
